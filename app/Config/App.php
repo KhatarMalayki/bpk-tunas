@@ -40,7 +40,12 @@ class App extends BaseConfig
      * something else. If you have configured your web server to remove this file
      * from your site URIs, set this variable to an empty string.
      */
-    public string $indexPage = '';
+    public $indexPage = '';
+
+    public $urlSuffix = ''; // Mengatur ekstensi URL, misalnya: '.html'
+
+    public $permittedUriChars = 'a-z 0-9~%.:_\-'; // Menyesuaikan karakter yang diperbolehkan dalam URI
+
 
     /**
      * --------------------------------------------------------------------------

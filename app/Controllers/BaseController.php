@@ -17,6 +17,7 @@ use App\Models\DbBpk;
 use Myth\Auth\Models\UserModel;
 use App\Libraries\Terbilang;
 use Myth\Auth\Models\GroupModel;
+use Config\Encryption;
 /**
  * Class BaseController
  *
@@ -59,6 +60,7 @@ abstract class BaseController extends Controller
     protected $userModel; // Definisi properti $userModel
     protected $terbilang; // Definisi properti $terbilang
     protected $groupModel; // Definisi properti $groupModel
+    protected $encryptionKey; // Definisi properti $encryptionKey
     /**
      * @return void
      */
@@ -70,6 +72,8 @@ abstract class BaseController extends Controller
         // Preload any models, libraries, etc, here.
 
         // E.g.: $this->session = \Config\Services::session();
+        $config = new Encryption();
+        $this->encryptionKey = $config->key;
         $this->groupModel = new GroupModel();
         $this->dbBpk = new DbBpk();
         $this->validation = \Config\Services::validation();

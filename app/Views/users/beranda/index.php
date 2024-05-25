@@ -35,13 +35,20 @@
   * License: https://bootstrapmade.com/license/
   ======================================================== -->
     <style>
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
         fieldset {
             border: 1px solid #ccc;
             padding: 20px;
             margin-bottom: 20px;
         }
-    </style>
-    <style>
+        .narrow-input {
+            max-width: 300px;
+        }
         .small-search {
             width: 200px;
             /* Sesuaikan ukuran kotak pencarian sesuai kebutuhan Anda */
@@ -102,24 +109,36 @@
     <!-- ======= Hero Section ======= -->
     <section id="hero">
         <div class="hero-container" data-aos="fade-in">
-            <h1>Check Request Status</h1>
-            <div class="input-container">
-                <?= form_open() ?>
-                <div class="form-floating mb-3">
-                    <input type="text" id="request_id" name="request_id" placeholder="Enter request ID" class="form-control rounded-3" required>
-                    <label for="request_id" class="ms-3">Request ID</label>
-                </div>
-                <a href="#" id="check" class="btn btn-primary rounded-pill"><i class="bi bi-search"></i> Check
-                    Status</a>
-                <?= form_close() ?>
-            </div>
+            <h1>Selamat Datang</h1>
+            <p>Silahkan Pilih Menu Di Bawah:</p>
+            <a href="#check-status-section" class="btn btn-success rounded-pill"><i class="bi bi-search"></i> Check Request Status</a>
+            <a href="#request-form-section" class="btn btn-success rounded-pill"><i class="bi bi-file-earmark"></i> Request Form</a>
         </div>
     </section><!-- End Hero Section -->
 
     <main id="main">
 
+       <!-- ======= Check Request Status Section ======= -->
+       <section id="check-status-section" class="padd-section text-center">
+            <div class="container" data-aos="fade-up">
+                <div class="section-title text-center">
+                    <h2>Check Request Status</h2>
+                </div>
+                <div class="input-container">
+                    <?= form_open() ?>
+                    <div class="form-floating mb-3 narrow-input">
+                        <input type="text" id="request_id" name="request_id" placeholder="Enter request ID" class="form-control rounded-3" required>
+                        <label for="request_id" class="ms-3">Request ID</label>
+                    </div>
+                    <a href="#" id="check" class="btn btn-success rounded-pill"><i class="bi bi-search"></i> Check Status</a>
+                    <?= form_close() ?>
+                </div>
+            </div>
+        </section><!-- End Check Request Status Section -->
+
+
         <!-- ======= Request Form Ticketing Section ======= -->
-        <section id="request-form" class="padd-section text-center">
+        <section id="request-form-section" class="padd-section text-center">
 
             <div class="container" data-aos="fade-up">
                 <div class="section-title text-center">
@@ -149,17 +168,16 @@
                         <?php endforeach ?>
                     </ul>
                 </div>
-                <script>
+                <!-- <script>
                     window.location.hash = '#request-form';
-                </script>
+                </script> -->
             <?php endif; ?>
 
             <!-- Akhir form pencarian -->
             <div class="container">
                 <div class="row">
                     <form id="requestForm">
-                        <input type="hidden" name="status" id="status" value="In-Process">
-                        <!-- <input type="hidden" name="created_at" id="created_at" value="<?= date('Y-m-d H:i:s') ?>"> -->
+                        <!-- <input type="hidden" name="status" id="status" value="In-Process"> -->
                         <div class="col-md-6 offset-md-3" data-aos="zoom-in" data-aos-delay="100">
                             <fieldset>
                                 <!-- Tambahkan form pencarian di sini -->
@@ -178,7 +196,7 @@
                                 </div>
                                 <div class="feature-block">
                                     <h4 style="text-align: left;">Jumlah Uang</h4>
-                                    <input type="text" class="form-control <?= session('error')['jmlh_uang'] ?? '' ? 'is-invalid' : '' ?>" id="jmlh_uang" name="jmlh_uang" placeholder="Masukkan jumlah uang sesuai data pengajuan anda">
+                                    <input type="number" class="form-control <?= session('error')['jmlh_uang'] ?? '' ? 'is-invalid' : '' ?>" id="jmlh_uang" name="jmlh_uang" placeholder="Masukkan jumlah uang sesuai data pengajuan anda">
                                 </div>
                                 <div class="feature-block">
                                     <h4 style="text-align: left;">Untuk Keperluan</h4>
@@ -190,7 +208,7 @@
                                 </div>
                                 <div class="feature-block">
 
-                                    <button id="submitForm" name="submitForm" class="btn btn-primary">Submit</button>
+                                    <button id="submitForm" name="submitForm" class="btn btn-success">Submit</button>
 
                                 </div>
                             </fieldset>
@@ -329,78 +347,98 @@
     <!-- Vendor JS Files -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Pastikan jQuery dimuat sebelum script Anda -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
     <!-- Ketika tombol ditekan, ambil nilai dari input dan perbarui href atribut anchor tag -->
     <!-- Include CryptoJS library -->
+    <script>
+        function formatRibuan(number) {
+            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+        // Event listener untuk memformat angka saat pengguna mengetik
+        document.getElementById('jmlh_uang').addEventListener('input', function(e) {
+            var value = e.target.value.replace(/\D/g, '');
+            e.target.value = formatRibuan(value);
+        });
+    </script>
+
     <!-- New JavaScript/jQuery code for form submission with SweetAlert -->
     <script>
-        $(document).ready(function() {
-            $('#submitForm').click(function() {
-                // Menampilkan pesan loading dengan ikon animasi
-                Swal.fire({
-                    title: 'Loading...',
-                    html: '<img src="assets/img/load-142_128.gif" alt="Loading..." style="width: 50px;">', // Ganti path sesuai dengan lokasi gambar loading Anda
-                    showConfirmButton: false, // Sembunyikan tombol OK selama loading
-                    allowOutsideClick: false, // Mencegah pengguna menutup SweetAlert selama loading
-                });
+        document.getElementById('requestForm').addEventListener('submit', function(event) {
+            // Menampilkan pesan loading dengan ikon animasi
+            Swal.fire({
+                title: 'Loading...',
+                html: '<img src="assets/img/load-142_128.gif" alt="Loading..." style="width: 50px;">', // Ganti path sesuai dengan lokasi gambar loading Anda
+                showConfirmButton: false, // Sembunyikan tombol OK selama loading
+                allowOutsideClick: false, // Mencegah pengguna menutup SweetAlert selama loading
+            });
 
-                // Serialize the form data
-                event.preventDefault(); // Mencegah pengiriman formulir melalui URL
-                // Get form values
-                // var nama = $('#nama').val();
-                // var jmlh_uang = $('#jmlh_uang').val();
-                // var for_kprln = $('#for_kprln').val();
-                // var fileInput = document.getElementById('file');
-                // var file = fileInput.files[0]; // Get the first file from the input field
-                // Get form values
-                var formData = new FormData($('#requestForm')[0]);
-                // Append CSRF token to FormData
-                formData.append('<?= csrf_token() ?>', '<?= csrf_hash() ?>');
+            // Serialize the form data
+            event.preventDefault(); // Mencegah pengiriman formulir melalui URL
 
-                // Send AJAX request
-                $.ajax({
-                    type: 'POST',
-                    url: 'request-bpk', // URL to handle form submission
-                    data: formData,
-                    processData: false, // Prevent jQuery from automatically transforming the data into a query string
-                    contentType: false, // Set content type to false, jQuery will automatically set it to multipart/form-data
-                    dataType: 'json',
-                    success: function(response) {
-                        if (response.status === 'success') {
-                            // Jika request sukses, hilangkan pesan loading dan tampilkan pesan sukses
-                            Swal.close(); // Tutup pesan loading
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Success!',
-                                html: response.message,
-                            }).then((result) => {
-                                if (result.value) {
-                                    window.location.href = '<?= base_url('/'); ?>'
-                                }
-                            });
-                        } else {
-                            // Jika request gagal, hilangkan pesan loading dan tampilkan pesan error
-                            Swal.close(); // Tutup pesan loading
-                            var errorMessage = Object.values(response.message).join('<br>');
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error!',
-                                html: errorMessage,
-                            });
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        // Jika terjadi kesalahan dalam request AJAX, tampilkan pesan error
+            // Serialize the form data
+            var form = document.getElementById('requestForm');
+            var formData = new FormData(form);
+
+            // Preprocessing the jmlh_uang value
+            var jumlahUangField = form.querySelector('[name="jmlh_uang"]');
+            if (jumlahUangField) {
+                var jumlahUangValue = jumlahUangField.value.replace(/\./g, ''); // Menghapus semua titik
+                formData.set('jmlh_uang', jumlahUangValue); // Mengganti nilai pada FormData
+            }
+
+            // Append CSRF token to FormData
+            formData.append('<?= csrf_token() ?>', '<?= csrf_hash() ?>');
+
+            fetch('request-bpk', {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(response => {
+                    if (response.status === 'success') {
+                        // Jika request sukses, hilangkan pesan loading dan tampilkan pesan sukses
                         Swal.close(); // Tutup pesan loading
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            html: response.message,
+                        }).then((result) => {
+                            if (result.value) {
+                                window.location.href = '<?= base_url('/'); ?>'
+                            }
+                        });
+                    } else {
+                        // Jika request gagal, hilangkan pesan loading dan tampilkan pesan error
+                        Swal.close(); // Tutup pesan loading
+                        var errorMessage = Object.values(response.message).join('<br>');
                         Swal.fire({
                             icon: 'error',
                             title: 'Error!',
-                            text: 'Failed to submit the form. Please try again later.',
+                            html: errorMessage,
                         });
                     }
+                })
+                .catch(error => {
+                    // Jika terjadi kesalahan dalam request Fetch, tampilkan pesan error
+                    Swal.close(); // Tutup pesan loading
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'Failed to submit the form. Please try again later.',
+                    });
+                    console.error('Error:', error);
                 });
-            });
         });
+        //     error: function(xhr, status, error) {
+        //         // Jika terjadi kesalahan dalam request AJAX, tampilkan pesan error
+        //         Swal.close(); // Tutup pesan loading
+        //         Swal.fire({
+        //             icon: 'error',
+        //             title: 'Error!',
+        //             text: 'Failed to submit the form. Please try again later.',
+        //         });
+        //     }
+        // });
     </script>
     <!-- Pastikan Anda memasukkan dependensi CryptoJS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
@@ -417,21 +455,47 @@
         });
     </script>
     <!-- event listener search -->
+    <!-- <script>
+        $('#search').keypress(function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                var searchInput = $('#search').val();
+
+                $.ajax({
+                    type: "GET",
+                    url: "/search",
+                    headers: {
+                        'X-CSRF-TOKEN': '<?= csrf_hash() ?>'
+                    },
+                    data: {
+                        'searchInput': searchInput
+                    },
+                    dataType: "json",
+                    success: function(data) {
+                        $('#nama').val(data.fullname);
+                        $('#email').val(data.email);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            }
+        });
+    </script> -->
     <script>
         document.getElementById('search').addEventListener('keypress', function(event) {
             if (event.key === 'Enter') {
                 event.preventDefault();
                 var searchInput = document.getElementById('search').value;
                 // var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                fetch('/search', {
-                        method: 'POST',
+                fetch('search?searchInput=' + searchInput, {
+                        method: 'GET',
                         headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '<?= csrf_hash() ?>',
+                            'X-CSRF-TOKEN': '<?= csrf_hash() ?>'
                         },
-                        body: JSON.stringify({
-                            'searchInput': searchInput
-                        })
+                        // body: JSON.stringify({
+                        //     'searchInput': searchInput
+                        // })
                     })
                     .then(response => response.json())
                     .then(data => {

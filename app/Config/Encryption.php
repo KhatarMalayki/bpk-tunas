@@ -21,7 +21,7 @@ class Encryption extends BaseConfig
      * You need to ensure it is long enough for the cipher and mode you plan to use.
      * See the user guide for more info.
      */
-    public string $key = '';
+    public string $key = 'P@ssw0rd19001';
 
     /**
      * --------------------------------------------------------------------------
@@ -88,5 +88,5 @@ class Encryption extends BaseConfig
      * Set to 'AES-128-CBC' to decrypt encrypted data that encrypted
      * by CI3 Encryption default configuration.
      */
-    public string $cipher = 'AES-256-CTR';
+    public string $cipher = 'AES-256-CBC';
 }

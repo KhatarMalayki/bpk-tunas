@@ -36,7 +36,7 @@ echo $this->extend('admin/layout/template'); ?>
                             <tr>
                                 <th>No</th>
                                 <th>Email</th>
-                                <th>Username</th>
+                                <th>NIK</th>
                                 <th>Tanggal Registrasi</th>
                                 <th>Aksi</th>
                             </tr>

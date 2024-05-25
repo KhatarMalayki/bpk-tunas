@@ -114,7 +114,7 @@
     </div>
     <!-- Konten HTML Anda yang sudah ada -->
     <!-- Konten HTML Anda yang sudah ada -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
     <!-- JavaScript untuk memperbarui status -->
     <script>
         // Fungsi untuk memperbarui status form secara asinkron
@@ -122,65 +122,71 @@
             // Ambil status saat ini dari variabel data_bpk
             var currentBpk = '<?= $data_bpk->no_bpk ?>'; // Ambil Bpk dari PHP dan simpan dalam variabel JavaScript
 
-            $.ajax({
-                url: '/update-status',
-                type: 'POST', // Menggunakan metode POST karena kita ingin mengirim data
-                data: {
-                    <?= csrf_token() ?>: '<?= csrf_hash() ?>',
-                    'currentBpk': currentBpk
-                }, // Kirim data status ke backend
-                success: function(response) {
+            fetch('/update-status', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '<?= csrf_hash() ?>' // CSRF token
+                    },
+                    body: JSON.stringify({
+                        'currentBpk': currentBpk
+                    })
+                })
+                .then(response => response.json())
+                .then(response => {
                     // Update tampilan berdasarkan respons dari server
-                    if (response.status === 'Approved') {
-                        $('.status-actions').html(`
-                        <a href="#" class="action-btn print" onclick="generatePDF('<?= $data_bpk->no_bpk ?>')"><i class="fas fa-file-pdf"></i> Cetak PDF</a>
-                        <a href="<?= base_url('/') ?>" class="action-btn back"><i class="fas fa-arrow-left"></i> Kembali</a>
-                    `);
-                        $('.status-text').html(`
-                        <p><strong>Status:</strong> <span class="status-approved"><i class="fas fa-check-circle"></i> Approved</span></p>
-                        <i class="fas fa-check-circle status-icon"></i>
-                        <p>Selamat Request anda telah di <strong>Approved</strong>.</p>
-                    `);
-                    }
-                    if (response.status === 'Rejected') {
-                        $('.status-actions').html(`
-                        <a href="#" class="action-btn back"><i class="fas fa-eye"></i> Lihat</a>
-                        <a href="<?= base_url('/') ?>" class="action-btn back"><i class="fas fa-arrow-left"></i> Kembali</a>
-                    `);
-                        $('.status-text').html(`
-                    <p><strong>Status:</strong> Rejected</p>
-                     <i class="fas fa-times-circle status-icon"></i>
-                    <p>Periksa kembali file <strong>PDF</strong> Anda.</p>
-                    `);
+                    if (response.status === 1) {
+                        document.querySelector('.status-actions').innerHTML = `
+                            <a href="#" class="action-btn print" onclick="generatePDF('<?= $data_bpk->no_bpk ?>')"><i class="fas fa-file-pdf"></i> Cetak PDF</a>
+                            <a href="<?= base_url('/') ?>" class="action-btn back"><i class="fas fa-arrow-left"></i> Kembali</a>
+                        `;
+                        document.querySelector('.status-text').innerHTML = `
+                            <p><strong>Status:</strong> <span class="status-approved"><i class="fas fa-check-circle"></i> Approved</span></p>
+                            <i class="fas fa-check-circle status-icon"></i>
+                            <p>Selamat Request anda telah di <strong>Approved</strong>.</p>
+                        `;
+                    } else if (response.status === -1) {
+                        document.querySelector('.status-actions').innerHTML = `
+                            <a href="#" class="action-btn back"><i class="fas fa-eye"></i> Lihat</a>
+                            <a href="<?= base_url('/') ?>" class="action-btn back"><i class="fas fa-arrow-left"></i> Kembali</a>
+                        `;
+                        document.querySelector('.status-text').innerHTML = `
+                            <p><strong>Status:</strong> Rejected</p>
+                            <i class="fas fa-times-circle status-icon"></i>
+                            <p>Periksa kembali file <strong>PDF</strong> Anda.</p>
+                        `;
                     }
                     // Anda bisa menambahkan logika untuk kasus lainnya seperti 'In-Process', 'Rejected', dll.
-                },
-                error: function(xhr, status, error) {
+                })
+                .catch(error => {
                     // Handle error jika terjadi
-                    console.error(error);
-                }
-            });
+                    console.error('Error:', error);
+                });
         }
 
-        // Panggil fungsi updateStatus secara berkala misalnya setiap 5 detik
-        setInterval(updateStatus, 1000); // Ubah angka 5000 menjadi interval yang sesuai dengan kebutuhan Anda
+        // Panggil fungsi updateStatus secara berkala misalnya setiap 1 detik
+        setInterval(updateStatus, 1000); // Ubah angka 1000 menjadi interval yang sesuai dengan kebutuhan Anda
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <!-- Fungsi untuk mencetak PDF -->
     <script>
         function generatePDF(no_bpk) {
-            // Kirim permintaan AJAX untuk mendapatkan konten HTML
-            $.ajax({
-                url: '/pdf/generate-pdf/' + no_bpk,
-                method: 'GET',
-                success: function(response) {
+            fetch('/pdf/generate-pdf/' + no_bpk, {
+                    method: 'GET'
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text(); // Menggunakan text() karena kita mengharapkan konten HTML
+                })
+                .then(htmlContent => {
                     // Gunakan library html2pdf.js untuk membuat PDF dari konten HTML
-                    html2pdf().from(response).save();
-                },
-                error: function(xhr, status, error) {
+                    html2pdf().from(htmlContent).save();
+                })
+                .catch(error => {
                     console.error('Kesalahan saat memuat konten HTML:', error);
-                }
-            });
+                });
         }
     </script>
 

@@ -47,7 +47,6 @@
                                 </thead>
                                 <tbody>
                                     <?php foreach ($data_bpk as $bpk) : ?>
-                                        <?php if ($bpk->status == 'In-Process') : ?>
                                         <tr>
                                             <td><?= $bpk->no_bpk ?></td>
                                             <td><?= $bpk->nama_user ?></td>
@@ -55,11 +54,10 @@
                                             <td><?= date('d/m/Y H:i:s', strtotime($bpk->created_at)) ?></td>
                                             <td width="15%" class="text-center">
                                                 <div style="display: flex; justify-content: center;">
-                                                    <a href="<?= base_url('bpk-detail/' . base64_encode($bpk->no_bpk)) ?>" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i> Lihat</a>
+                                                    <a href="<?= base_url('bpk-detail/' . $bpk->encrypted_id) ?>" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i> Lihat</a>
                                                 </div>
                                             </td>
                                         </tr>
-                                        <?php endif ?>
                                     <?php endforeach ?>
                                 </tbody>
                             </table>

@@ -8,7 +8,7 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('/', 'BerandaController::index');
 $routes->get('beranda', 'BerandaController::index');
 $routes->get('status/(:any)', 'BerandaController::status/$1');
-$routes->post('search', 'BerandaController::search');
+$routes->get('search', 'BerandaController::search');
 $routes->post('update-status', 'BerandaController::getStatus');
 $routes->post('request-bpk', 'BerandaController::create');
 
@@ -20,8 +20,8 @@ $routes->group('', ['filter' => 'role:admin,superadmin'], function($routes) {
 // routes admin bukti pengeluaran kas
 $routes->get('bukti-pengeluaran-kas', 'Admin\BpkController::index');
 $routes->get('request-form', 'Admin\BpkController::request');
-$routes->put('bukti-pengeluaran-kas/approve', 'Admin\BpkController::approve');
-$routes->put('bukti-pengeluaran-kas/reject', 'Admin\BpkController::reject');
+$routes->put('bukti-pengeluaran-kas/approve/(:segment)', 'Admin\BpkController::approve/$1');
+$routes->put('bukti-pengeluaran-kas/reject/(:segment)', 'Admin\BpkController::reject/$1');
 $routes->put('bukti-pengeluaran-kas/edit/(:segment)', 'Admin\BpkController::update/$1');
 // routes admin akun
 $routes->get('akun/detail/(:num)', 'Admin\AkunController::detail/$1');

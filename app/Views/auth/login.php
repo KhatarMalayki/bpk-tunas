@@ -31,7 +31,7 @@
                                     class="form-control <?php if (session('errors.login')) : ?>is-invalid<?php endif ?>"
                                     id="inputEmail" type="text" name="login"
                                     placeholder="<?=lang('Auth.emailOrUsername')?>" />
-                                <label for="inputEmail"><?=lang('Auth.emailOrUsername')?></label>
+                                <label for="inputEmail">Email or NIK</label>
                                 <div class="invalid-feedback">
                                     <?= session('errors.login') ?>
                                 </div>
